@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/commons/css/bootstrap.min.css">
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+        a:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="showExpensesDiv" class="container" style="width: 80%">
+    <h2 class="text-center mb-3">金额列表</h2>
+    <hr />
+    <div class="row">
+        <div class="col-lg-3">
+            <span>选择月份：</span>
+            <select v-model="month">
+                <option value="">全部</option>
+                <option value="201902">201902</option>
+                <option value="201903">201903</option>
+                <option value="201904">201904</option>
+                <option value="201905">201905</option>
+                <option value="201906">201906</option>
+                <option value="201907">201907</option>
+                <option value="201908">201908</option>
+                <option value="201909">201909</option>
+                <option value="201910">201910</option>
+                <option value="201911">201911</option>
+                <option value="201912">201912</option>
+                <option value="202001">202001</option>
+                <option value="202002">202002</option>
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <span>选择类型：</span>
+            <select v-model="type">
+                <option value="">全部</option>
+                <option value="ZFB">ZFB</option>
+                <option value="WX">WX</option>
+                <option value="JD">JD</option>
+                <option value="HB">HB</option>
+            </select>
+        </div>
+
+        <div class="col-lg-2">
+            <input v-on:click="change()" style="height: 32px;" type="button" class="btn btn-small btn-success" value="查询"/>
+        </div>
+
+        <div class="col-lg-2">
+            <input v-on:click="add()" style="height: 32px;" type="button" class="btn btn-small btn-success" value="添加款项"/>
+        </div>
+    </div>
+    <br /> <br />
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>月份</th>
+            <th>金额</th>
+            <th>类型</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="expenses in expensesList" >
+            <td>{{ expenses.month }}</td>
+            <td>¥ {{ expenses.amount }}</td>
+            <td>{{ expenses.type }}</td>
+            <td>
+                <a style="color: #007BFF;" v-on:click="">修改</a>
+                <a style="color: #007BFF;" v-on:click="deleteExpenses(expenses.id)" class="offset-1">删除</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>合计：</td>
+            <td>{{ totalAmount }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script src="/commons/js/jquery-3.2.1.min.js"></script>
+<script src="/commons/js/bootstrap.min.js"></script>
+<script src="/commons/js/vue.min.js"></script>
+<script>
+    new Vue({
+        el:'#showExpensesDiv',
+        data:{
+            expensesList:"",
+            month:"",
+            type:"",
+            totalAmount:0
+        },
+        methods:{
+
+            //查询
+            change:function ()
+            {
+                this.showExpenses(this);
+            },
+            //删除
+            deleteExpenses:function (id)
+            {
+                if (confirm("确认要删除吗？"))
+                {
+                    var _self = this;
+
+                    $.ajax({
+                        url: "/expenses",
+                        type:"delete",
+                        data:{
+                            id:id
+                        },
+                        async: false,
+                        success: function (res) {
+                            _self.showExpenses(_self);
+                        },
+                        error: function () {
+                            alert("未知错误！")
+                        }
+                    });
+                }
+            },
+            //添加
+            add:function ()
+            {
+                window.location.href="add.html";
+            }
+        },
+        beforeCreate:function ()
+        {
+            var _self = this;
+            $.get
+            (
+                "/expenses",
+                function (res)
+                {
+                    _self.totalAmount = 0;
+
+                    _self.expensesList = res;
+
+                    for (var i=0; i < res.length; i++)
+                    {
+                        _self.totalAmount += res[i].amount;
+                    }
+                }
+            );
+        }
+    });
+
+    Vue.prototype.showExpenses = function (_self)
+    {
+        $.get
+        (
+            "/expenses",
+            {month:_self.month,type:_self.type},
+            function (res)
+            {
+                _self.totalAmount = 0;
+
+                _self.expensesList = res;
+
+                for (var i=0; i < res.length; i++)
+                {
+                    _self.totalAmount += res[i].amount;
+                }
+            }
+        );
+    }
+</script>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/commons/css/bootstrap.min.css">
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+        a:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="showExpensesDiv" class="container" style="width: 80%">
+    <h2 class="text-center mb-3">添加款项</h2>
+    <hr />
+    <form id="frm">
+        <div class="row">
+            <div class="input-group mb-3 col-6 offset-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">性&nbsp;&nbsp;&nbsp;别</label>
+                </div>
+                <select name="usersex" class="form-control">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group mb-3 col-6 offset-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">姓&nbsp;&nbsp;&nbsp;名</label>
+                </div>
+                <input v-model="userName" name="username" type="text" class="form-control" placeholder="请输入员工姓名">
+            </div>
+            <div class="col-3">
+                <span class="text-danger">{{ nameTip }}</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-group mb-3 col-6 offset-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">职&nbsp;&nbsp;&nbsp;位</label>
+                </div>
+                <select name="roleid" class="form-control">
+                    <option v-for="role in roles" :value="role.roleid">{{role.rolename}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group mb-3 col-6 offset-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">密&nbsp;&nbsp;&nbsp;码</label>
+                </div>
+                <input v-model="userPwd" name="userpwd" type="password" class="form-control" placeholder="员工登录密码" />
+            </div>
+            <div class="col-3">
+                <span class="text-danger">{{ pwdTip }}</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group col-6 offset-3">
+                <input type="button" class="btn btn-primary col-5" v-on:click="addUser" value="确认添加" />
+                <input type="reset" class="btn btn-secondary col-5 offset-2 " value="重新填写"/>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script src="/commons/js/jquery-3.2.1.min.js"></script>
+<script src="/commons/js/bootstrap.min.js"></script>
+<script src="/commons/js/vue.min.js"></script>
+<script>
+    new Vue({
+        el:'#showExpensesDiv',
+        data:{
+            expensesList:"",
+            month:"",
+            type:"",
+            totalAmount:0
+        },
+        methods:{
+
+            //查询
+            change:function ()
+            {
+                this.showExpenses(this);
+            },
+            //删除
+            deleteExpenses:function (id)
+            {
+                if (confirm("确认要删除吗？"))
+                {
+                    var _self = this;
+
+                    $.ajax({
+                        url: "/expenses",
+                        type:"delete",
+                        data:{
+                            id:id
+                        },
+                        async: false,
+                        success: function (res) {
+                            _self.showExpenses(_self);
+                        },
+                        error: function () {
+                            alert("未知错误！")
+                        }
+                    });
+                }
+            },
+            //添加
+            add:function ()
+            {
+                window.location.href="add.html";
+            }
+        },
+        beforeCreate:function ()
+        {
+            var _self = this;
+            $.get
+            (
+                "/expenses",
+                function (res)
+                {
+                    _self.totalAmount = 0;
+
+                    _self.expensesList = res;
+
+                    for (var i=0; i < res.length; i++)
+                    {
+                        _self.totalAmount += res[i].amount;
+                    }
+                }
+            );
+        }
+    });
+
+    Vue.prototype.showExpenses = function (_self)
+    {
+        $.get
+        (
+            "/expenses",
+            {month:_self.month,type:_self.type},
+            function (res)
+            {
+                _self.totalAmount = 0;
+
+                _self.expensesList = res;
+
+                for (var i=0; i < res.length; i++)
+                {
+                    _self.totalAmount += res[i].amount;
+                }
+            }
+        );
+    }
+</script>
+</html>

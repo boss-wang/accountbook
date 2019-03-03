@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.chao.accountbook.dao.ExpensesDao">
+
+    <select id="getExpensesList" resultType="Expenses">
+        select * from t_expenses
+        where 1=1
+        <if test="month != null and month != ''">
+            and month = #{month}
+        </if>
+        <if test="type != null and type != ''">
+            and type = #{type}
+        </if>
+        order by month,type
+    </select>
+
+    <insert id="addExpenses">
+        insert into t_expenses (id,month,amount,type)
+        values (
+            #{expenses.id},
+            #{expenses.month},
+            #{expenses.amount},
+            #{expenses.type}
+        )
+    </insert>
+
+    <update id="updateExpenses">
+        update t_expenses
+        set amount = #{expenses.amount}
+        where id = #{expenses.id}
+    </update>
+
+    <delete id="deleteExpenses">
+        delete from t_expenses
+        where id = #{id}
+    </delete>
+
+</mapper>
