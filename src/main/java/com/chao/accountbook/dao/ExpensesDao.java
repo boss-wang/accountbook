@@ -14,4 +14,6 @@ public interface ExpensesDao
     void updateExpenses(@Param("expenses") Expenses expenses);
 
     void deleteExpenses(@Param("id") String id);
+
+    List<Expenses> getExpensesListOverView();
 }

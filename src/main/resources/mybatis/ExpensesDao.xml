@@ -3,7 +3,13 @@
 <mapper namespace="com.chao.accountbook.dao.ExpensesDao">
 
     <select id="getExpensesList" resultType="Expenses">
-        select * from t_expenses
+        select
+            id,
+            `month`,
+            amount,
+            type,
+            username
+        from t_expenses
         where 1=1
         <if test="month != null and month != ''">
             and month = #{month}
@@ -15,12 +21,13 @@
     </select>
 
     <insert id="addExpenses">
-        insert into t_expenses (id,month,amount,type)
+        insert into t_expenses (id,month,amount,type,username)
         values (
             #{expenses.id},
             #{expenses.month},
             #{expenses.amount},
-            #{expenses.type}
+            #{expenses.type},
+            #{expenses.username}
         )
     </insert>
 
@@ -35,4 +42,11 @@
         where id = #{id}
     </delete>
 
+    <select id="getExpensesListOverView" resultType="Expenses">
+        select
+            `month` month,
+            sum(amount) amount
+        from t_expenses
+        group by month
+    </select>
 </mapper>

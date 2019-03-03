@@ -39,4 +39,11 @@ public class ExpensesService
     {
         expensesDao.deleteExpenses(id);
     }
+
+    public List<Expenses> getExpensesListOverView()
+    {
+        List<Expenses> expensesListOverView = expensesDao.getExpensesListOverView();
+
+        return expensesListOverView;
+    }
 }

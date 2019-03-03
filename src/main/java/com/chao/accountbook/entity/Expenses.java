@@ -13,4 +13,6 @@ public class Expenses
 
     private String type;
 
+    private String username;
+
 }

@@ -21,51 +21,61 @@
         <div class="row">
             <div class="input-group mb-3 col-6 offset-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text">性&nbsp;&nbsp;&nbsp;别</label>
+                    <label class="input-group-text">月&nbsp;&nbsp;&nbsp;份</label>
                 </div>
-                <select name="usersex" class="form-control">
-                    <option value="男">男</option>
-                    <option value="女">女</option>
+                <select name="month" class="form-control">
+                    <option value="201902">201902</option>
+                    <option value="201903">201903</option>
+                    <option value="201904">201904</option>
+                    <option value="201905">201905</option>
+                    <option value="201906">201906</option>
+                    <option value="201907">201907</option>
+                    <option value="201908">201908</option>
+                    <option value="201909">201909</option>
+                    <option value="201910">201910</option>
+                    <option value="201911">201911</option>
+                    <option value="201912">201912</option>
+                    <option value="202001">202001</option>
+                    <option value="202002">202002</option>
                 </select>
             </div>
         </div>
         <div class="row">
             <div class="input-group mb-3 col-6 offset-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text">姓&nbsp;&nbsp;&nbsp;名</label>
+                    <label class="input-group-text">金&nbsp;&nbsp;&nbsp;额</label>
                 </div>
-                <input v-model="userName" name="username" type="text" class="form-control" placeholder="请输入员工姓名">
+                <input v-model="amount" name="amount" type="text" class="form-control" placeholder="请输入金额">
             </div>
             <div class="col-3">
-                <span class="text-danger">{{ nameTip }}</span>
+                <span class="text-danger">{{ amountTip }}</span>
             </div>
         </div>
 
         <div class="row">
             <div class="input-group mb-3 col-6 offset-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text">职&nbsp;&nbsp;&nbsp;位</label>
+                    <label class="input-group-text">类&nbsp;&nbsp;&nbsp;型</label>
                 </div>
-                <select name="roleid" class="form-control">
-                    <option v-for="role in roles" :value="role.roleid">{{role.rolename}}</option>
+                <select name="type" class="form-control">
+                    <option value="支付宝">支付宝</option>
+                    <option value="微信">微信</option>
+                    <option value="京东">京东</option>
                 </select>
             </div>
         </div>
         <div class="row">
             <div class="input-group mb-3 col-6 offset-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text">密&nbsp;&nbsp;&nbsp;码</label>
+                    <label class="input-group-text">用&nbsp;&nbsp;&nbsp;户</label>
                 </div>
-                <input v-model="userPwd" name="userpwd" type="password" class="form-control" placeholder="员工登录密码" />
-            </div>
-            <div class="col-3">
-                <span class="text-danger">{{ pwdTip }}</span>
+                <input v-model="username" name="username" type="text" class="form-control" placeholder="清输入用户名" />
             </div>
         </div>
         <div class="row">
             <div class="input-group col-6 offset-3">
-                <input type="button" class="btn btn-primary col-5" v-on:click="addUser" value="确认添加" />
-                <input type="reset" class="btn btn-secondary col-5 offset-2 " value="重新填写"/>
+                <input type="button" class="btn btn-primary col-5" v-on:click="addExpenses" value="确认添加" />
+                <input type="button" class="btn btn-secondary col-5 offset-2 " v-on:click="goBack" value="返回"/>
             </div>
         </div>
     </form>
@@ -76,88 +86,44 @@
 <script src="/commons/js/vue.min.js"></script>
 <script>
     new Vue({
-        el:'#showExpensesDiv',
+        el: '#showExpensesDiv',
         data:{
-            expensesList:"",
-            month:"",
-            type:"",
-            totalAmount:0
+            amountTip:'',
+            amount:0,
+            username:'',
+            dataReady:true
         },
         methods:{
-
-            //查询
-            change:function ()
-            {
-                this.showExpenses(this);
-            },
-            //删除
-            deleteExpenses:function (id)
-            {
-                if (confirm("确认要删除吗？"))
+            addExpenses:function () {
+                var _self = this;
+                _self.amountTip = '';
+                _self.dataReady = true;
+                if (!_self.amount || isNaN(_self.amount))
                 {
-                    var _self = this;
+                    _self.amountTip = '请输入正确的金额';
+                    _self.dataReady = false;
+                }
 
+
+                if(this.dataReady === true)
+                {
                     $.ajax({
                         url: "/expenses",
-                        type:"delete",
-                        data:{
-                            id:id
-                        },
+                        type:"post",
+                        data: $('#frm').serialize(),
                         async: false,
-                        success: function (res) {
-                            _self.showExpenses(_self);
-                        },
-                        error: function () {
-                            alert("未知错误！")
+                        success:function (res)
+                        {
+                            alert("添加成功");
+                            window.location.href="home.html";
                         }
                     });
                 }
             },
-            //添加
-            add:function ()
-            {
-                window.location.href="add.html";
+            goBack:function () {
+                window.history.go(-1);
             }
-        },
-        beforeCreate:function ()
-        {
-            var _self = this;
-            $.get
-            (
-                "/expenses",
-                function (res)
-                {
-                    _self.totalAmount = 0;
-
-                    _self.expensesList = res;
-
-                    for (var i=0; i < res.length; i++)
-                    {
-                        _self.totalAmount += res[i].amount;
-                    }
-                }
-            );
         }
     });
-
-    Vue.prototype.showExpenses = function (_self)
-    {
-        $.get
-        (
-            "/expenses",
-            {month:_self.month,type:_self.type},
-            function (res)
-            {
-                _self.totalAmount = 0;
-
-                _self.expensesList = res;
-
-                for (var i=0; i < res.length; i++)
-                {
-                    _self.totalAmount += res[i].amount;
-                }
-            }
-        );
-    }
 </script>
 </html>

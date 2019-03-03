@@ -38,4 +38,12 @@ public class ExpensesController
     {
         expensesService.deleteExpenses(id);
     }
+
+    @GetMapping("/expenses/overview")
+    public List<Expenses> getExpensesOverView()
+    {
+        List<Expenses> expensesList = expensesService.getExpensesListOverView();
+
+        return expensesList;
+    }
 }

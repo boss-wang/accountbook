@@ -14,6 +14,18 @@
     </style>
 </head>
 <body>
+
+<nav class="navbar fixed-top navbar-expand-sm bg-light navbar-light">
+    <ul class="navbar-nav" style="margin: 0 auto;">
+        <li class="nav-item">
+            <a class="nav-link" href="overview.html">总览</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="home.html">明细</a>
+        </li>
+    </ul>
+</nav>
+
 <div id="showExpensesDiv" class="container" style="width: 80%">
     <h2 class="text-center mb-3">金额列表</h2>
     <hr />
@@ -63,6 +75,7 @@
             <th>月份</th>
             <th>金额</th>
             <th>类型</th>
+            <th>用户名</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -71,6 +84,7 @@
             <td>{{ expenses.month }}</td>
             <td>¥ {{ expenses.amount }}</td>
             <td>{{ expenses.type }}</td>
+            <td>{{ expenses.username }}</td>
             <td>
                 <a style="color: #007BFF;" v-on:click="">修改</a>
                 <a style="color: #007BFF;" v-on:click="deleteExpenses(expenses.id)" class="offset-1">删除</a>
@@ -79,7 +93,7 @@
 
         <tr>
             <td>合计：</td>
-            <td>{{ totalAmount }}</td>
+            <td>¥ {{ totalAmount }}</td>
             <td></td>
             <td></td>
         </tr>
