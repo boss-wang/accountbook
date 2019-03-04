@@ -20,6 +20,9 @@
         <li class="nav-item">
             <a class="nav-link" href="home.html">明细</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="add.html">添加款项</a>
+        </li>
     </ul>
 </nav>
 
@@ -27,7 +30,7 @@
     <h2 class="text-center mb-3">总体概览</h2>
     <hr />
 
-    <table class="table table-hover">
+    <table class="table table-hover text-center">
         <thead>
         <tr>
             <th>月份</th>
@@ -37,12 +40,12 @@
         <tbody>
         <tr v-for="expenses in expensesList" >
             <td>{{ expenses.month }}</td>
-            <td>¥ {{ expenses.amount }}</td>
+            <td>¥ {{ expenses.amount.toFixed(2) }}</td>
         </tr>
 
         <tr>
             <td>合计：</td>
-            <td>¥ {{ totalAmount }}</td>
+            <td>¥ {{ totalAmount.toFixed(2) }}</td>
             <td></td>
             <td></td>
         </tr>

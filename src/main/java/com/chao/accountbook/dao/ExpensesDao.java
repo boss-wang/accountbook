@@ -16,4 +16,8 @@ public interface ExpensesDao
     void deleteExpenses(@Param("id") String id);
 
     List<Expenses> getExpensesListOverView();
+
+    List<String> getMonthList();
+
+    List<String> getPayMethodList();
 }

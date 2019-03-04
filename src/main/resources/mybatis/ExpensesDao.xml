@@ -49,4 +49,12 @@
         from t_expenses
         group by month
     </select>
+
+    <select id="getMonthList"  resultType="java.lang.String">
+        select month_name from t_month order by month_name
+    </select>
+
+    <select id="getPayMethodList" resultType="java.lang.String">
+        select pay_method from t_pay_method order by pay_method
+    </select>
 </mapper>

@@ -46,4 +46,14 @@ public class ExpensesService
 
         return expensesListOverView;
     }
+
+    public List<String> getMonthList()
+    {
+        return expensesDao.getMonthList();
+    }
+
+    public List<String> getPayMethodList()
+    {
+        return expensesDao.getPayMethodList();
+    }
 }

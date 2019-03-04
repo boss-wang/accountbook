@@ -14,6 +14,20 @@
     </style>
 </head>
 <body>
+<nav class="navbar fixed-top navbar-expand-sm bg-light navbar-light">
+    <ul class="navbar-nav" style="margin: 0 auto;">
+        <li class="nav-item">
+            <a class="nav-link" href="overview.html">总览</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="home.html">明细</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="add.html">添加款项</a>
+        </li>
+    </ul>
+</nav>
+
 <div id="showExpensesDiv" class="container" style="width: 80%">
     <h2 class="text-center mb-3">添加款项</h2>
     <hr />
@@ -24,19 +38,7 @@
                     <label class="input-group-text">月&nbsp;&nbsp;&nbsp;份</label>
                 </div>
                 <select name="month" class="form-control">
-                    <option value="201902">201902</option>
-                    <option value="201903">201903</option>
-                    <option value="201904">201904</option>
-                    <option value="201905">201905</option>
-                    <option value="201906">201906</option>
-                    <option value="201907">201907</option>
-                    <option value="201908">201908</option>
-                    <option value="201909">201909</option>
-                    <option value="201910">201910</option>
-                    <option value="201911">201911</option>
-                    <option value="201912">201912</option>
-                    <option value="202001">202001</option>
-                    <option value="202002">202002</option>
+                    <option v-for="monthName in monthList" :value="monthName">{{ monthName }}</option>
                 </select>
             </div>
         </div>
@@ -58,9 +60,7 @@
                     <label class="input-group-text">类&nbsp;&nbsp;&nbsp;型</label>
                 </div>
                 <select name="type" class="form-control">
-                    <option value="支付宝">支付宝</option>
-                    <option value="微信">微信</option>
-                    <option value="京东">京东</option>
+                    <option v-for="payMethod in payMethodList" v-bind:value="payMethod">{{ payMethod }}</option>
                 </select>
             </div>
         </div>
@@ -69,7 +69,10 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text">用&nbsp;&nbsp;&nbsp;户</label>
                 </div>
-                <input v-model="username" name="username" type="text" class="form-control" placeholder="清输入用户名" />
+                <select v-model="username" name="username" class="form-control">
+                    <option value="朱云">朱云</option>
+                    <option value="王超">王超</option>
+                </select>
             </div>
         </div>
         <div class="row">
@@ -90,7 +93,9 @@
         data:{
             amountTip:'',
             amount:0,
-            username:'',
+            username:'朱云',
+            monthList:'',
+            payMethodList:'',
             dataReady:true
         },
         methods:{
@@ -123,6 +128,28 @@
             goBack:function () {
                 window.history.go(-1);
             }
+        },
+        beforeCreate:function ()
+        {
+            var _self = this;
+
+            $.get
+            (
+                "/monthList",
+                function (res)
+                {
+                    _self.monthList = res;
+                }
+            );
+
+            $.get
+            (
+                "/payMethodList",
+                function (res)
+                {
+                    _self.payMethodList = res;
+                }
+            );
         }
     });
 </script>

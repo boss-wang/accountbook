@@ -46,4 +46,16 @@ public class ExpensesController
 
         return expensesList;
     }
+
+    @GetMapping("/monthList")
+    public List<String> getMonthList()
+    {
+        return expensesService.getMonthList();
+    }
+
+    @GetMapping("/payMethodList")
+    public List<String> getPayMethodList()
+    {
+        return expensesService.getPayMethodList();
+    }
 }
